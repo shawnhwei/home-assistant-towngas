@@ -19,6 +19,7 @@ from homeassistant.const import (
     CONF_USERNAME,
     CONF_PASSWORD,
     CONF_TIMEOUT,
+    UnitOfEnergy,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
@@ -91,7 +92,7 @@ class TownGasSensor(SensorEntity):
 
         self._attr_device_class = SensorDeviceClass.ENERGY
         self._attr_native_value = None
-        self._attr_native_unit_of_measurement = 'MJ'
+        self._attr_native_unit_of_measurement = UnitOfEnergy.MEGA_JOULE
         self._attr_state_class = SensorStateClass.TOTAL
 
         self._account_number = None
