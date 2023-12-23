@@ -89,9 +89,9 @@ class TownGasSensor(SensorEntity):
         self._password = password
         self._timeout = timeout
 
-        self._attr_device_class = SensorDeviceClass.GAS
+        self._attr_device_class = SensorDeviceClass.ENERGY
         self._attr_native_value = None
-        self._attr_native_unit_of_measurement = 'Megajoules'
+        self._attr_native_unit_of_measurement = 'MJ'
         self._attr_state_class = SensorStateClass.TOTAL
 
         self._account_number = None
