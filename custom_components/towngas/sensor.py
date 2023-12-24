@@ -163,7 +163,7 @@ class TownGasSensor(SensorEntity):
                 json = await response.json()
 
                 reading = json['historyList'][0]
-                self._attr_last_reset = datetime.fromisoformat(reading['billingDate'])
+                self._attr_last_reset = datetime.datetime.fromisoformat(reading['billingDate'])
                 self._attr_native_value = reading['meterReading']
 
             async with async_timeout.timeout(self._timeout):
