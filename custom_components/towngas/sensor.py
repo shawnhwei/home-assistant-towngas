@@ -90,6 +90,7 @@ class TownGasSensor(SensorEntity):
         self._password = password
         self._timeout = timeout
 
+        self._attr_last_reset = None
         self._attr_device_class = SensorDeviceClass.ENERGY
         self._attr_native_value = None
         self._attr_native_unit_of_measurement = UnitOfEnergy.MEGA_JOULE
@@ -161,28 +162,9 @@ class TownGasSensor(SensorEntity):
                 response.raise_for_status()
                 json = await response.json()
 
-                for record in json['chartBarList']:
-                    if record['strMonth1'] and record['consumption1']:
-                        self._readings.append({
-                            'time': record['strMonth1'],
-                            'mj': record['consumption1'],
-                        })
-
-                    if record['strMonth2'] and record['consumption2']:
-                        self._readings.append({
-                            'time': record['strMonth2'],
-                            'mj': record['consumption2'],
-                        })
-
-                    if record['isEstimateMonth'] and record['strMonth1'] and record['predictionConsumption']:
-                        self._readings.append({
-                            'time': record['strMonth1'],
-                            'mj': record['predictionConsumption'],
-                        })
-
-                        self._attr_native_value = record['predictionConsumption']
-
-                self._readings.reverse()
+                reading = json['historyList'][0]
+                self._attr_last_reset = datetime.fromisoformat(reading['billingDate'])
+                self._attr_native_value = reading['meterReading']
 
             async with async_timeout.timeout(self._timeout):
                 response = await self._session.request(
@@ -203,6 +185,7 @@ class TownGasSensor(SensorEntity):
                         'time': record['strBillDate'],
                         'total': int(record['total'].replace('HK $', '').replace('.00', '')),
                     })
+                    
         except Exception as e:
             print(e, flush=True)
 
